@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2025-01-12]
+### shaku_axum 0.6.0
+#### Breaking Changes
+- Updated to axum 0.8 (thanks [@ethanhann](https://github.com/ethanhann))
+
+## [0.6.2] - 2024-08-31
+### Fixed
+- Switched from `anymap` to `anymap2` to fix a possible soundness bug.
+  See [RUSTSEC-2021-0065](https://rustsec.org/advisories/RUSTSEC-2021-0065.html)
+  (thanks [@wolpert](https://github.com/wolpert))
+
 ## [2024-05-19]
 ### shaku_rocket 0.7.0
 #### Breaking Changes
@@ -248,7 +259,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/AzureMarker/shaku/compare/318619b80311266ecf66caa7d49e19b46a86c040...HEAD
+[Unreleased]: https://github.com/AzureMarker/shaku/compare/4d2057504f036665e04b92417841f77e27cd3446...HEAD
+[2025-01-12]: https://github.com/AzureMarker/shaku/commit/4d2057504f036665e04b92417841f77e27cd3446
 [2024-05-19]: https://github.com/AzureMarker/shaku/commit/318619b80311266ecf66caa7d49e19b46a86c040
 [2023-04-20]: https://github.com/AzureMarker/shaku/commit/c33b8e5258f6440b47ee8532168d7cdc91eb263b
 [2022-04-01]: https://github.com/AzureMarker/shaku/commit/896beb182058b4db9b9643551c80016f9a76430b
@@ -257,6 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2021-06-13]: https://github.com/AzureMarker/shaku/commit/065433b2ddf7e4269fd1cfc356d8d37c5260246c
 [2021-04-10]: https://github.com/AzureMarker/shaku/commit/5eee11ef073d179215265fb60f2d506e28716f96
 [2021-02-09]: https://github.com/AzureMarker/shaku/commit/342673133b06ea2fa5414a2458fa066e338b828e
+[0.6.2]: https://github.com/AzureMarker/shaku/releases/tag/v0.6.2
 [0.6.1]: https://github.com/AzureMarker/shaku/releases/tag/v0.6.1
 [0.6.0]: https://github.com/AzureMarker/shaku/releases/tag/v0.6.0
 [0.5.0]: https://github.com/AzureMarker/shaku/releases/tag/v0.5.0
