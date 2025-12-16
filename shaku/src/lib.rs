@@ -89,6 +89,28 @@ macro_rules! generate_impls_for_component {
 
 #[macro_export]
 #[doc(hidden)]
+/// Macro to generate only HasVariant implementation.
+/// This is used when multiple components implement the same interface.
+macro_rules! generate_variant_impl_for_component {
+    (
+        (
+            $property:ident,
+            $module:ident ($($ty_generics:tt)*),;
+            [$($impl_generics:tt)*],
+            [$($where_clause:tt)*],
+            $component:ty
+        ),
+        $interface:ty,
+        $impl_type:ty
+    ) => {
+        // We rely on the manual HasVariant impl generated in expand_module_macro
+        // This macro is just a placeholder to satisfy the linkage macro callback
+        // but we don't want it to generate HasComponent.
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
 macro_rules! generate_single_impl_v2 {
     (
         ($property:ident, $module:ident $($ty_generics:tt)*, [$($impl_generics:tt)*], [$($where_clause:tt)*]),
@@ -141,5 +163,125 @@ macro_rules! generate_no_impls_for_component {
         $interface:ty,
         $impl_type:ty
     ) => {};
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! generate_module_impls {
+    // Base case: No more components
+    (
+        $context:tt,
+        [],
+        $seen:tt
+    ) => {};
+
+    // Recursive step
+    (
+        $context:tt,
+        [
+            ($macro_path:path, $args:tt, $generic_args:tt),
+            $($rest:tt)*
+        ],
+        [$($seen:tt)*]
+    ) => {
+        $macro_path! {
+            $crate::consume_component_impl,
+            $args,
+            $context,
+            [ $($rest)* ],
+            [ $($seen)* ],
+            $generic_args
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! consume_component_impl {
+    (
+        $args:tt,
+        ($($interface:tt)+),
+        $impl_type:ty,
+        $context:tt,
+        [$($rest:tt)*],
+        [$($seen:tt)*],
+        $generic_args:tt
+    ) => {
+        // 2. Check if interface is seen
+        $crate::if_interface_not_seen! {
+            ($($interface)+),
+            [ $($seen)* ],
+            {
+                // Not seen: Generate HasComponent
+                $crate::generate_impls_for_component! {
+                    $args, $($interface)+, $impl_type
+                }
+
+                // Recurse with interface added to seen
+                $crate::generate_module_impls! {
+                    $context,
+                    [ $($rest)* ],
+                    [ $($seen)* (($($interface)+)), ]
+                }
+            },
+            {
+                // Seen: Skip HasComponent
+                // Recurse without adding to seen (already there)
+                $crate::generate_module_impls! {
+                    $context,
+                    [ $($rest)* ],
+                    [ $($seen)* ]
+                }
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! if_interface_not_seen {
+    (($($target:tt)+), [], { $($then:tt)* }, { $($else:tt)* }) => {
+        $($then)*
+    };
+    (($($target:tt)+), [(($($head:tt)+)), $($tail:tt)*], { $($then:tt)* }, { $($else:tt)* }) => {
+        $crate::check_if_same_type! {
+            ($($target)+), ($($head)+),
+            { $($else)* }, // Same type -> Seen -> Execute Else
+            {
+                // Different type -> Check tail
+                $crate::if_interface_not_seen! {
+                    ($($target)+), [ $($tail)* ], { $($then)* }, { $($else)* }
+                }
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! with_dollar {
+    ($macro:path, $($args:tt)*) => {
+        $macro! { $($args)*, $ }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! check_if_same_type {
+    (($($t1:tt)+), ($($t2:tt)+), { $($then:tt)* }, { $($else:tt)* }) => {
+        $crate::with_dollar! { $crate::run_check_if_same_type, ($($t1)+), ($($t2)+), { $($then)* }, { $($else)* } }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! run_check_if_same_type {
+    (($($t1:tt)+), ($($t2:tt)+), { $($then:tt)* }, { $($else:tt)* }, $d:tt) => {
+        macro_rules! __shaku_check_type {
+            ($($t1)+) => { $($then)* };
+            ($d($d other:tt)+) => { $($else)* };
+        }
+        __shaku_check_type! { $($t2)+ }
+    };
 }
 

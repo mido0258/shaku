@@ -87,7 +87,7 @@ fn replace_generics(tokens: TokenStream, generics: &[Ident], lifetimes: &[Ident]
     let generic_impls_no_parens = &service.metadata.generics.params;
 
     // Generate the linkage macro
-    let macro_name = format_ident!("__shaku_interfaces_{}", component_name);
+    let macro_name = component_name.clone();
     let macro_name_internal = format_ident!("__shaku_interfaces_{}_internal", component_name);
     let _linkage_interfaces = if interfaces.len() > 1 {
         interfaces.iter().collect::<Vec<_>>()
@@ -121,7 +121,7 @@ fn replace_generics(tokens: TokenStream, generics: &[Ident], lifetimes: &[Ident]
     let (macro_pattern, macro_body) = if service.metadata.no_resolve {
         if generic_params.is_empty() {
              (
-                quote! { {$callback:path, $args:tt, $_ignore:tt} },
+                quote! { {$callback:path, $args:tt, $context:tt, $rest:tt, $seen:tt, $extra:tt} },
                 quote! { }
             )
         } else {
@@ -140,16 +140,16 @@ fn replace_generics(tokens: TokenStream, generics: &[Ident], lifetimes: &[Ident]
                 }
             }).collect();
             (
-                quote! { {$callback:path, $args:tt, (#(#macro_args),*)} },
+                quote! { {$callback:path, $args:tt, $context:tt, $rest:tt, $seen:tt, (#(#macro_args),*)} },
                 quote! { }
             )
         }
     } else if generic_params.is_empty() {
         (
-            quote! { {$callback:path, $args:tt, $_ignore:tt} },
+            quote! { {$callback:path, $args:tt, $context:tt, $rest:tt, $seen:tt, $extra:tt} },
             quote! {
                 #(
-                    $callback! { $args, dyn #transformed_interfaces, #impl_type }
+                    $callback! { $args, (dyn #transformed_interfaces), #impl_type, $context, $rest, $seen, $extra }
                 )*
             }
         )
@@ -168,11 +168,12 @@ fn replace_generics(tokens: TokenStream, generics: &[Ident], lifetimes: &[Ident]
                  quote! { $#ident:lifetime }
             }
         }).collect();
+        let macro_args_tokens = quote! { (#(#macro_args),*) };
         (
-            quote! { {$callback:path, $args:tt, (#(#macro_args),*)} },
+            quote! { {$callback:path, $args:tt, $context:tt, $rest:tt, $seen:tt, #macro_args_tokens} },
             quote! {
                 #(
-                    $callback! { $args, dyn #transformed_interfaces, #impl_type }
+                    $callback! { $args, (dyn #transformed_interfaces), #impl_type, $context, $rest, $seen, #macro_args_tokens }
                 )*
             }
         )

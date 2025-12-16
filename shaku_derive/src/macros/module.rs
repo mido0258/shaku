@@ -38,34 +38,40 @@ pub fn expand_module_macro(module: ModuleData) -> syn::Result<TokenStream> {
     // We also need to track which components are autowired so we don't generate default HasComponent for them
     // AND so we    // Generate implementations for components
     // Generate HasVariant for all components (no HasComponent to avoid conflicts)
-    let component_impls: Vec<TokenStream> = module
+
+    // Collect HasVariant impls separately
+    let variant_impls: Vec<TokenStream> = module
         .services
         .components
         .items
         .iter()
         .enumerate()
         .map(|(i, component)| {
-            // Generate HasVariant for all components
-            let variant_impl = has_variant_impl_for_component(i, component, &module, capture_build_context);
-            
-            // Invoke linkage macro to generate HasComponent impls
-            // The linkage macro will call ::shaku::generate_impls_for_component
-            let component_ty = &component.ty;
-            
+            has_variant_impl_for_component(i, component, &module, capture_build_context)
+        })
+        .collect();
+
+    // Collect tuples for the recursive macro
+    let component_macro_args: Vec<TokenStream> = module
+        .services
+        .components
+        .items
+        .iter()
+        .enumerate()
+        .map(|(i, component)| {
             // Construct the linkage macro name
-            // We need to handle paths like `my_crate::MyComponent` -> `my_crate::__shaku_interfaces_MyComponent`
+            let component_ty = &component.ty;
             let macro_path = match component_ty {
                 syn::Type::Path(type_path) => {
                     let mut path = type_path.path.clone();
+                    // Remove generic arguments from the last segment, as macros don't take them
                     if let Some(last_segment) = path.segments.last_mut() {
-                        last_segment.ident = format_ident!("__shaku_interfaces_{}", last_segment.ident);
                         last_segment.arguments = syn::PathArguments::None;
                     }
                     path
                 }
                 _ => panic!("Component type must be a path"),
             };
-            
             
             let module_name = &module.metadata.identifier;
             let (impl_generics, ty_generics, where_clause) = &module.metadata.generics.split_for_impl();
@@ -89,10 +95,10 @@ pub fn expand_module_macro(module: ModuleData) -> syn::Result<TokenStream> {
                 _ => quote! { () },
             };
 
-
-            let linkage_impl = quote! {
-                #macro_path! {
-                    ::shaku::generate_impls_for_component,
+            // Instead of generating the impl directly, we generate a tuple for the recursive macro
+            quote! {
+                (
+                    #macro_path,
                     (
                         #property,
                         #module_name (#ty_generics),; 
@@ -101,16 +107,11 @@ pub fn expand_module_macro(module: ModuleData) -> syn::Result<TokenStream> {
                         #component_ty
                     ),
                     #generic_args
-                }
-            };
-            
-            quote! {
-                #variant_impl
-                #linkage_impl
+                ),
             }
         })
         .collect();
-
+            
     let has_provider_impls: Vec<TokenStream> = module
         .services
         .providers
@@ -176,7 +177,15 @@ pub fn expand_module_macro(module: ModuleData) -> syn::Result<TokenStream> {
         #module_trait_impl
         #module_builder
         #module_impl
-        #(#component_impls)*
+        #(#variant_impls)*
+        
+        ::shaku::generate_module_impls! {
+            (),
+            [
+                #(#component_macro_args)*
+            ],
+            []
+        }
 
         #(#has_interfaces_impls)*
         #(#has_provider_impls)*

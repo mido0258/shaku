@@ -2,14 +2,6 @@ error[E0277]: the trait bound `TestModule: HasProvider<dyn ServiceTrait>` is not
   --> tests/ui/resolve_unregistered_provider.rs:22:61
    |
 22 |     let _service = HasProvider::<dyn ServiceTrait>::provide(&module);
-   |                    ---------------------------------------- ^^^^^^^ unsatisfied trait bound
+   |                    ---------------------------------------- ^^^^^^^ the trait `HasProvider<dyn ServiceTrait>` is not implemented for `TestModule`
    |                    |
    |                    required by a bound introduced by this call
-   |
-help: the trait `HasProvider<dyn ServiceTrait>` is not implemented for `TestModule`
-  --> tests/ui/resolve_unregistered_provider.rs:12:1
-   |
-12 | / module! {
-13 | |     TestModule {
-   | |______________^
-   = note: this error originates in the macro `module` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -19,9 +19,9 @@ impl Dependency for DependencyImpl {
 }
 
 #[macro_export]
-macro_rules! __shaku_interfaces_DependencyImpl {
-    ($callback:path, $args:tt, $_ignore:tt) => {
-        $callback! { $args, dyn Dependency, dyn Dependency }
+macro_rules! DependencyImpl {
+    ($callback:path, $args:tt, $context:tt, $rest:tt, $seen:tt, $extra:tt) => {
+        $callback! { $args, (dyn Dependency), dyn Dependency, $context, $rest, $seen, $extra }
     };
 }
 

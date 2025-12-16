@@ -2,10 +2,10 @@ error: Invalid attribute format. Example: #[shaku(interface = <your trait>, no_r
  --> tests/ui/no_interface_key.rs:9:1
   |
 9 | #[shaku(interfac = ComponentTrait)]
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | ^
 
 error: Invalid attribute format. Example: #[shaku(interface = <your trait>, no_resolve = true)]
   --> tests/ui/no_interface_key.rs:14:1
    |
 14 | #[shaku(interfac = ProviderTrait)]
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | ^
