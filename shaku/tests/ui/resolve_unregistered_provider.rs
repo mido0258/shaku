@@ -13,7 +13,7 @@ module! {
     TestModule {
         components = [],
         providers = [],
-        interfaces = []
+
     }
 }
 

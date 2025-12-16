@@ -45,7 +45,6 @@ module! {
     TestModule {
         components = [FooImpl, BarImpl],
         providers = [],
-        interfaces = []
     }
 }
 

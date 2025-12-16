@@ -1,15 +1,13 @@
 use crate::parser::Parser;
 use crate::structures::module::{
-    ComponentAttribute, InterfaceAttribute, ModuleData, ModuleItem, ModuleItems, ModuleMetadata,
+    ComponentAttribute, ModuleData, ModuleItem, ModuleItems, ModuleMetadata,
     ModuleServices, ProviderAttribute, Submodule,
 };
 use std::collections::HashSet;
 use std::hash::Hash;
 use syn::parse::{Parse, ParseStream};
-use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
-use syn::token::Comma;
-use syn::{Attribute, Error, Generics, Type};
+use syn::{Attribute, Error, Generics};
 
 impl Parse for ModuleData {
     fn parse(input: ParseStream) -> syn::Result<Self> {
@@ -96,13 +94,17 @@ impl Parse for Submodule {
 
 impl Parse for ModuleServices {
     fn parse(input: ParseStream) -> syn::Result<Self> {
+        let components = input.parse()?;
+        let comma_token = input.parse()?;
+        let providers = input.parse()?;
+        
+        let trailing_comma = input.parse()?;
+        
         Ok(ModuleServices {
-            components: input.parse()?,
-            comma_token: input.parse()?,
-            providers: input.parse()?,
-            comma_token2: input.parse()?,
-            interfaces: input.parse()?,
-            trailing_comma: input.parse()?,
+            components,
+            _comma_token:comma_token,
+            providers,
+            trailing_comma,
         })
     }
 }
@@ -114,9 +116,9 @@ where
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let content;
         Ok(ModuleItems {
-            keyword_token: input.parse()?,
-            eq_token: input.parse()?,
-            bracket_token: syn::bracketed!(content in input),
+            _keyword_token: input.parse()?,
+            _eq_token: input.parse()?,
+            _bracket_token: syn::bracketed!(content in input),
             items: content.parse_terminated(ModuleItem::parse)?,
         })
     }
@@ -153,6 +155,9 @@ impl Parser<ComponentAttribute> for Attribute {
     fn parse_as(&self) -> syn::Result<ComponentAttribute> {
         if self.path.is_ident("lazy") && self.tokens.is_empty() {
             Ok(ComponentAttribute::Lazy)
+        } else if self.path.is_ident("interface") {
+            let parenthesized: syn::Type = syn::parse2(self.tokens.clone())?;
+            Ok(ComponentAttribute::Interface(parenthesized))
         } else {
             Err(Error::new(self.span(), "Unknown attribute".to_string()))
         }
@@ -165,21 +170,4 @@ impl Parser<ProviderAttribute> for Attribute {
     }
 }
 
-impl Parser<InterfaceAttribute> for Attribute {
-    fn parse_as(&self) -> syn::Result<InterfaceAttribute> {
-        if self.path.is_ident("implementations") {
-            let tokens = self.tokens.clone();
 
-            let parser = Punctuated::<Type, Comma>::parse_terminated;
-            let implementations = ::syn::parse::Parser::parse2(parser, tokens)?;
-            let mut vec: Vec<Type> = vec![];
-            for x in implementations.iter() {
-                vec.push(Type::from(x.clone()));
-            }
-
-            Ok(InterfaceAttribute::Implementations(vec))
-        } else {
-            Err(Error::new(self.span(), "Unknown attribute".to_string()))
-        }
-    }
-}

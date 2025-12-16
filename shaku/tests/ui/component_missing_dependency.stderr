@@ -5,12 +5,12 @@ error[E0277]: the trait bound `TestModule: HasComponent<(dyn DependencyTrait + '
 23 | |     TestModule {
 24 | |         components = [ComponentImpl],
 25 | |         providers = [],
-26 | |         interfaces = []
-27 | |     }
+...  |
 28 | | }
-   | |_^ the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`, which is required by `ComponentImpl: shaku::Component<TestModule>`
+   | |_^ unsatisfied trait bound
    |
-   = help: the trait `HasComponent<<ComponentImpl as shaku::Component<TestModule>>::Interface>` is implemented for `TestModule`
+   = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`
+           but trait `HasComponent<(dyn ComponentTrait + 'static)>` is implemented for it
 note: required for `ComponentImpl` to implement `shaku::Component<TestModule>`
   --> tests/ui/component_missing_dependency.rs:14:10
    |
@@ -27,8 +27,8 @@ error[E0277]: `TestModule` cannot be shared between threads safely
 23 |     TestModule {
    |     ^^^^^^^^^^ `TestModule` cannot be shared between threads safely
    |
-   = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`, which is required by `TestModule: ModuleInterface`
-   = help: the trait `HasComponent<<ComponentImpl as shaku::Component<TestModule>>::Interface>` is implemented for `TestModule`
+   = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`
+           but trait `HasComponent<(dyn ComponentTrait + 'static)>` is implemented for it
 note: required for `ComponentImpl` to implement `shaku::Component<TestModule>`
   --> tests/ui/component_missing_dependency.rs:14:10
    |
@@ -49,3 +49,95 @@ note: required by a bound in `Module`
    | pub trait Module: ModuleInterface {
    |                   ^^^^^^^^^^^^^^^ required by this bound in `Module`
    = note: this error originates in the derive macro `Component` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `TestModule` cannot be shared between threads safely
+  --> tests/ui/component_missing_dependency.rs:22:1
+   |
+22 | / module! {
+23 | |     TestModule {
+24 | |         components = [ComponentImpl],
+25 | |         providers = [],
+...  |
+28 | | }
+   | |_^ `TestModule` cannot be shared between threads safely
+   |
+   = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`
+           but trait `HasComponent<(dyn ComponentTrait + 'static)>` is implemented for it
+note: required for `ComponentImpl` to implement `shaku::Component<TestModule>`
+  --> tests/ui/component_missing_dependency.rs:14:10
+   |
+14 | #[derive(Component)]
+   |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+15 | #[shaku(interface = ComponentTrait)]
+16 | struct ComponentImpl {
+   |        ^^^^^^^^^^^^^
+note: required because it appears within the type `TestModule`
+  --> tests/ui/component_missing_dependency.rs:23:5
+   |
+23 |     TestModule {
+   |     ^^^^^^^^^^
+   = note: required for `TestModule` to implement `ModuleInterface`
+note: required by a bound in `HasComponent`
+  --> src/component.rs
+   |
+   | pub trait HasComponent<I: Interface + ?Sized>: ModuleInterface {
+   |                                                ^^^^^^^^^^^^^^^ required by this bound in `HasComponent`
+   = note: this error originates in the macro `::shaku::generate_impls_for_component` which comes from the expansion of the derive macro `Component` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `TestModule` cannot be shared between threads safely
+ --> tests/ui/component_missing_dependency.rs:23:5
+  |
+ 23 |     TestModule {
+    |     ^^^^^^^^^^ `TestModule` cannot be shared between threads safely
+    |
+    = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`
+            but trait `HasComponent<(dyn ComponentTrait + 'static)>` is implemented for it
+note: required for `ComponentImpl` to implement `shaku::Component<TestModule>`
+   --> tests/ui/component_missing_dependency.rs:14:10
+    |
+ 14 | #[derive(Component)]
+    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+ 15 | #[shaku(interface = ComponentTrait)]
+ 16 | struct ComponentImpl {
+    |        ^^^^^^^^^^^^^
+note: required because it appears within the type `TestModule`
+   --> tests/ui/component_missing_dependency.rs:23:5
+    |
+ 23 |     TestModule {
+    |     ^^^^^^^^^^
+    = note: required for `TestModule` to implement `ModuleInterface`
+note: required by a bound in `HasComponents`
+   --> src/component.rs
+    |
+    | pub trait HasComponents<I: Interface + ?Sized>: ModuleInterface {
+    |                                                 ^^^^^^^^^^^^^^^ required by this bound in `HasComponents`
+    = note: this error originates in the derive macro `Component` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `TestModule: HasComponent<(dyn DependencyTrait + 'static)>` is not satisfied
+ --> tests/ui/component_missing_dependency.rs:24:23
+  |
+ 22 | / module! {
+ 23 | |     TestModule {
+ 24 | |         components = [ComponentImpl],
+    | |                       ^^^^^^^^^^^^^ unsatisfied trait bound
+ 25 | |         providers = [],
+...   |
+ 28 | | }
+    | |_- required by a bound introduced by this call
+    |
+    = help: the trait `HasComponent<(dyn DependencyTrait + 'static)>` is not implemented for `TestModule`
+            but trait `HasComponent<(dyn ComponentTrait + 'static)>` is implemented for it
+note: required for `ComponentImpl` to implement `shaku::Component<TestModule>`
+   --> tests/ui/component_missing_dependency.rs:14:10
+    |
+ 14 | #[derive(Component)]
+    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+ 15 | #[shaku(interface = ComponentTrait)]
+ 16 | struct ComponentImpl {
+    |        ^^^^^^^^^^^^^
+note: required by a bound in `ModuleBuildContext::<M>::register_component`
+   --> src/module/module_build_context.rs
+    |
+    |     pub fn register_component<I: Interface + ?Sized, C: Component<M>>(&mut self) {
+    |                                                         ^^^^^^^^^^^^ required by this bound in `ModuleBuildContext::<M>::register_component`
+    = note: this error originates in the derive macro `Component` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -34,7 +34,7 @@ module! {
     FooModule {
         components = [FooImpl],
         providers = [],
-        interfaces = []
+
     }
 }
 

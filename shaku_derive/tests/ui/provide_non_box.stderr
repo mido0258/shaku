@@ -1,5 +1,5 @@
 error: Found non-Box type annotated with #[shaku(provide)]
-  --> $DIR/provide_non_box.rs:18:5
+  --> tests/ui/provide_non_box.rs:18:5
    |
 18 |     dependency: Arc<dyn DependencyTrait>,
    |     ^^^^^^^^^^

@@ -34,7 +34,7 @@ module! {
     BaseModule {
         components = [ComponentDependencyImpl, ComponentServiceImpl],
         providers = [ProviderServiceImpl],
-        interfaces = []
+
     }
 }
 
@@ -42,14 +42,14 @@ module! {
     TestModule {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use BaseModule {
             // Both of these services depend on ComponentDependency, but it does
             // not need to be imported here.
             components = [ComponentService],
             providers = [ProviderService],
-            interfaces = []
+    
         }
     }
 }

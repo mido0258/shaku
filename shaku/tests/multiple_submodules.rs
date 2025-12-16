@@ -38,7 +38,7 @@ module! {
     ComponentModuleImpl: ComponentModule {
         components = [ComponentDependencyImpl],
         providers = [],
-        interfaces = []
+
     }
 }
 
@@ -46,7 +46,7 @@ module! {
     ProviderModuleImpl: ProviderModule {
         components = [],
         providers = [ProviderDependencyImpl],
-        interfaces = []
+
     }
 }
 
@@ -54,17 +54,17 @@ module! {
     TestModule {
         components = [],
         providers = [ServiceImpl],
-        interfaces = [],
+
 
         use ComponentModule {
             components = [ComponentDependency],
             providers = [],
-            interfaces = [],
+    
         },
         use ProviderModule {
             components = [],
             providers = [ProviderDependency],
-            interfaces = [],
+    
         }
     }
 }

@@ -37,12 +37,12 @@
 //!     RootModule {
 //!         components = [MyComponentImpl],
 //!         providers = [],
-//!         interfaces = [],
+
 //!
 //!         use dyn AuthModule {
 //!             components = [dyn AuthManager],
 //!             providers = [],
-//!             interfaces = []
+//!     
 //!         }
 //!     }
 //! }
@@ -73,8 +73,8 @@
 //! #
 //! # module! {
 //! #     RootModule {
-//! #         components = [MyComponentImpl], providers = [], interfaces = [],
-//! #         use dyn AuthModule { components = [dyn AuthManager], providers = [], interfaces = [] }
+//! #         components = [MyComponentImpl], providers = [],
+//! #         use dyn AuthModule { components = [dyn AuthManager], providers = [] }
 //! #     }
 //! # }
 //! #
@@ -87,7 +87,7 @@
 //!     AuthModuleImpl: AuthModule {
 //!         components = [AuthManagerImpl],
 //!         providers = [],
-//!         interfaces = []
+//! 
 //!     }
 //! }
 //!

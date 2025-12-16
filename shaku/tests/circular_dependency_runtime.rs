@@ -71,8 +71,7 @@ impl shaku::HasComponent<dyn Component2Trait> for TestModule {
 /// detected during module build.
 #[test]
 #[should_panic(
-    expected = "Circular dependency detected while resolving dyn circular_dependency_runtime::Component1Trait. \
-    Resolution chain: [circular_dependency_runtime::Component1, circular_dependency_runtime::Component2]"
+    expected = "Circular dependency detected while resolving circular_dependency_runtime::Component1. Resolution chain: [circular_dependency_runtime::Component1, circular_dependency_runtime::Component2]"
 )]
 fn circular_dependency_runtime() {
     ModuleBuilder::<TestModule>::with_submodules(()).build();

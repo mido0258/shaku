@@ -47,3 +47,99 @@ pub use once_cell::unsync::OnceCell;
 
 // Expose a flat module structure
 pub use crate::{component::*, module::*, provider::*};
+
+#[macro_export]
+#[doc(hidden)]
+
+/// Macro to generate HasComponent and HasVariant implementations.
+/// This is invoked by the component's linkage macro.
+
+macro_rules! generate_impls_for_component {
+    (
+        (
+            $property:ident,
+            $module:ident ($($ty_generics:tt)*),;
+            [$($impl_generics:tt)*],
+            [$($where_clause:tt)*],
+            $component:ty
+        ),
+        $interface:ty,
+        $impl_type:ty
+    ) => {
+        impl $($impl_generics)* $crate::HasComponent<$interface> for $module $($ty_generics)* $($where_clause)* {
+            fn build_component(
+                context: &mut $crate::ModuleBuildContext<Self>
+            ) -> ::std::sync::Arc<$interface> {
+                let component = <Self as $crate::HasVariant<$component, $impl_type>>::build_variant(context);
+                component as ::std::sync::Arc<$interface>
+            }
+
+            fn resolve(&self) -> ::std::sync::Arc<$interface> {
+                let component = <Self as $crate::HasVariant<$component, $impl_type>>::resolve(self);
+                component as ::std::sync::Arc<$interface>
+            }
+
+            fn resolve_ref(&self) -> &$interface {
+                let component = <Self as $crate::HasVariant<$component, $impl_type>>::resolve_ref(self);
+                component as &$interface
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! generate_single_impl_v2 {
+    (
+        ($property:ident, $module:ident $($ty_generics:tt)*, [$($impl_generics:tt)*], [$($where_clause:tt)*]),
+        $component:ty,
+        $interface:ty
+    ) => {
+        impl $($impl_generics)* $crate::HasVariant<$component, $interface> for $module $($ty_generics)* $($where_clause)* {
+            fn build_variant(context: &mut $crate::ModuleBuildContext<Self>) -> ::std::sync::Arc<$interface> {
+                let component = context.build_component::<$component>();
+                component as ::std::sync::Arc<$interface>
+            }
+
+            fn resolve(&self) -> ::std::sync::Arc<$interface> {
+                ::std::sync::Arc::clone(&self.$property) as ::std::sync::Arc<$interface>
+            }
+
+            fn resolve_ref(&self) -> &$interface {
+                &*self.$property
+            }
+        }
+
+        compile_error!("generate_impls_for_component called!");
+        impl $($impl_generics)* $crate::HasComponent<$interface> for $module $($where_clause)* {
+            fn build_component(context: &mut $crate::ModuleBuildContext<Self>) -> ::std::sync::Arc<$interface> {
+                <Self as $crate::HasVariant<$component, $interface>>::build_variant(context)
+            }
+
+            fn resolve(&self) -> ::std::sync::Arc<$interface> {
+                <Self as $crate::HasVariant<$component, $interface>>::resolve(self)
+            }
+
+            fn resolve_ref(&self) -> &$interface {
+                <Self as $crate::HasVariant<$component, $interface>>::resolve_ref(self)
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! generate_no_impls_for_component {
+    (
+        (
+            $property:ident,
+            $module:ident ($($ty_generics:tt)*),;
+            [$($impl_generics:tt)*],
+            [$($where_clause:tt)*],
+            $component:ty
+        ),
+        $interface:ty,
+        $impl_type:ty
+    ) => {};
+}
+

@@ -39,7 +39,7 @@ module! {
         providers = [
             SimpleServiceImpl
         ],
-        interfaces = []
+
     }
 }
 

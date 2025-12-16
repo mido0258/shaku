@@ -53,7 +53,6 @@ module! {
             Component2
         ],
         providers = [],
-        interfaces = []
     }
 }
 

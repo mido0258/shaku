@@ -24,9 +24,10 @@ impl ServiceData {
 #[derive(Clone, Debug)]
 pub struct MetaData {
     pub identifier: Ident,
-    pub interface: Type,
+    pub interfaces: Vec<Type>,
     pub generics: Generics,
     pub visibility: Visibility,
+    pub no_resolve: bool,
 }
 
 #[derive(Copy, Clone, Debug)]

@@ -28,7 +28,8 @@ pub fn expand_derive_provider(input: &DeriveInput) -> syn::Result<TokenStream> {
 
     // Provider implementation
     let provider_name = service.metadata.identifier;
-    let interface = service.metadata.interface;
+    let interfaces = service.metadata.interfaces;
+    let interface = interfaces.first().expect("At least one interface is required");
     let (_, generic_tys, generic_where) = service.metadata.generics.split_for_impl();
     let generic_impls_no_parens = &service.metadata.generics.params;
     let output = quote! {

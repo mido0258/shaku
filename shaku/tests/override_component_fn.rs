@@ -38,7 +38,7 @@ module! {
     MyModule {
         components = [MyDependencyImpl, MyComponent],
         providers = [],
-        interfaces = []
+
     }
 }
 
@@ -70,12 +70,12 @@ module! {
     MyCircularModule {
         components = [MyComponent],
         providers = [],
-        interfaces = []
+
     }
 }
 
 #[test]
-#[should_panic = "Circular dependency detected while resolving dyn override_component_fn::MyInterface. Resolution chain: [override_component_fn::MyComponent]"]
+#[should_panic = "Circular dependency detected while resolving override_component_fn::MyComponent. Resolution chain: [override_component_fn::MyComponent]"]
 fn detects_circular_dependency() {
     MyCircularModule::builder()
         .with_component_override_fn::<dyn MyInterface>(Box::new(|context| {

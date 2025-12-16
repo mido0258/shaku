@@ -26,7 +26,7 @@ use std::any::Any;
 ///     MyModule {
 ///         components = [MyComponentImpl],
 ///         providers = [],
-///         interfaces = []
+/// 
 ///     }
 /// }
 /// # fn main() {}

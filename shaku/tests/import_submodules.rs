@@ -29,7 +29,7 @@ module! {
     Module1Impl {
         components = [MyComponentImpl],
         providers = [],
-        interfaces = []
+
     }
 }
 
@@ -37,12 +37,12 @@ module! {
     Module2Impl {
         components = [],
         providers = [MyProviderImpl],
-        interfaces = [],
+
 
         use Module1 {
             components = [MyComponent],
             providers = [],
-            interfaces = [],
+    
         }
     }
 }
@@ -51,12 +51,12 @@ module! {
     RootModule {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use Module2 {
             components = [],
             providers = [MyProvider],
-            interfaces = []
+    
         }
     }
 }

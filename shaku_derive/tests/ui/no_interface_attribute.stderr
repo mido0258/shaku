@@ -1,11 +1,11 @@
 error: Unable to find interface. Please add a '#[shaku(interface = <your trait>)]'
- --> $DIR/no_interface_attribute.rs:9:8
+ --> tests/ui/no_interface_attribute.rs:9:8
   |
 9 | struct ComponentImpl;
   |        ^^^^^^^^^^^^^
 
 error: Unable to find interface. Please add a '#[shaku(interface = <your trait>)]'
-  --> $DIR/no_interface_attribute.rs:13:8
+  --> tests/ui/no_interface_attribute.rs:13:8
    |
 13 | struct ProviderImpl;
    |        ^^^^^^^^^^^^

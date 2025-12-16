@@ -22,7 +22,7 @@ module! {
     TestModule {
         components = [],
         providers = [ProviderImpl],
-        interfaces = []
+
     }
 }
 

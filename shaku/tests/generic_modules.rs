@@ -32,7 +32,6 @@ module! {
     MyModule<E: Debug + Default + Interface> {
         components = [RegisterServiceImpl<E>],
         providers = [RegisterProviderImpl<E>],
-        interfaces = []
     }
 }
 

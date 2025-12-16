@@ -35,7 +35,6 @@ module! {
     TestModule {
         components = [MyComponentImpl],
         providers = [MyProviderImpl, MySecondProviderImpl],
-        interfaces = []
     }
 }
 

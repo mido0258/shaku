@@ -48,7 +48,7 @@ module! {
     MyModule<A: Animal + Default + Interface> {
         components = [AnimalServiceImpl<A>],
         providers = [],
-        interfaces = []
+
     }
 }
 

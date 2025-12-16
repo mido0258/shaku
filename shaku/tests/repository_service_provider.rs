@@ -80,7 +80,6 @@ module! {
             RepositoryImpl,
             ServiceImpl
         ],
-        interfaces = []
     }
 }
 

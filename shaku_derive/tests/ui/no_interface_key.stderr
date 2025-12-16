@@ -1,11 +1,11 @@
-error: Unable to find interface. Please add a '#[shaku(interface = <your trait>)]'
-  --> $DIR/no_interface_key.rs:10:8
-   |
-10 | struct ComponentImpl;
-   |        ^^^^^^^^^^^^^
+error: Invalid attribute format. Example: #[shaku(interface = <your trait>, no_resolve = true)]
+ --> tests/ui/no_interface_key.rs:9:1
+  |
+9 | #[shaku(interfac = ComponentTrait)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-error: Unable to find interface. Please add a '#[shaku(interface = <your trait>)]'
-  --> $DIR/no_interface_key.rs:15:8
+error: Invalid attribute format. Example: #[shaku(interface = <your trait>, no_resolve = true)]
+  --> tests/ui/no_interface_key.rs:14:1
    |
-15 | struct ProviderImpl;
-   |        ^^^^^^^^^^^^
+14 | #[shaku(interfac = ProviderTrait)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

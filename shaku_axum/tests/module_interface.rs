@@ -22,7 +22,8 @@ trait MyModule: HasComponent<dyn MyComponent> + HasProvider<dyn MyProvider> {}
 module! {
     MyModuleImpl: MyModule {
         components = [MyComponentImpl],
-        providers = [MyProviderImpl]
+        providers = [MyProviderImpl],
+
     }
 }
 

@@ -19,7 +19,7 @@ module! {
     TestSubModule {
         components = [ComponentImpl],
         providers = [ProviderImpl],
-        interfaces = [],
+
     }
 }
 
@@ -27,12 +27,11 @@ module! {
     TestModule1 {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use TestSubModule {
             components = [#[lazy] ComponentTrait],
             providers = [],
-            interfaces = [],
         }
     }
 }
@@ -41,12 +40,12 @@ module! {
     TestModule2 {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use TestSubModule {
             components = [],
             providers = [#[lazy] ProviderTrait],
-            interfaces = [],
+    
         }
     }
 }

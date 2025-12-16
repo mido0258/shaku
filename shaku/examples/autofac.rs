@@ -51,7 +51,7 @@ module! {
             TodayWriter
         ],
         providers = [],
-        interfaces = []
+
     }
 }
 

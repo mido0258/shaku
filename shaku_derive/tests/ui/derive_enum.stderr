@@ -1,11 +1,11 @@
 error: Only structs are currently supported
-  --> $DIR/derive_enum.rs:10:6
+  --> tests/ui/derive_enum.rs:10:6
    |
 10 | enum ComponentImpl {
    |      ^^^^^^^^^^^^^
 
 error: Only structs are currently supported
-  --> $DIR/derive_enum.rs:17:6
+  --> tests/ui/derive_enum.rs:17:6
    |
 17 | enum ProviderImpl {
    |      ^^^^^^^^^^^^

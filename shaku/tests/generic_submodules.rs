@@ -27,7 +27,7 @@ module! {
     MyModule<C: Interface + Default> {
         components = [DbPoolImpl<C>],
         providers = [],
-        interfaces = []
+
     }
 }
 
@@ -35,12 +35,12 @@ module! {
     RootModule<C: Interface + Default> {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use MyModule<C> {
             components = [DbPool<C>],
             providers = [],
-            interfaces = []
+    
         }
     }
 }

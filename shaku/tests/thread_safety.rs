@@ -15,12 +15,12 @@ module! {
     TestModule {
         components = [TestComponentImpl],
         providers = [],
-        interfaces = [],
+
 
         use TestSubmodule {
             components = [],
             providers = [],
-            interfaces = [],
+    
         }
     }
 }

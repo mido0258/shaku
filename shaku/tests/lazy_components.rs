@@ -18,6 +18,13 @@ impl Dependency for DependencyImpl {
     }
 }
 
+#[macro_export]
+macro_rules! __shaku_interfaces_DependencyImpl {
+    ($callback:path, $args:tt, $_ignore:tt) => {
+        $callback! { $args, dyn Dependency, dyn Dependency }
+    };
+}
+
 impl<M: Module> Component<M> for DependencyImpl {
     type Interface = dyn Dependency;
     type Parameters = Arc<AtomicUsize>;
@@ -28,6 +35,10 @@ impl<M: Module> Component<M> for DependencyImpl {
 
         Box::new(Self(val))
     }
+}
+
+impl shaku::DefaultInterface for DependencyImpl {
+    type Interface = dyn Dependency;
 }
 
 #[derive(Component)]
@@ -46,7 +57,7 @@ module! {
     TestModule1 {
         components = [#[lazy] DependencyImpl],
         providers = [],
-        interfaces = []
+
     }
 }
 
@@ -54,7 +65,7 @@ module! {
     TestModule2 {
         components = [#[lazy] DependencyImpl, ServiceImpl],
         providers = [],
-        interfaces = []
+
     }
 }
 

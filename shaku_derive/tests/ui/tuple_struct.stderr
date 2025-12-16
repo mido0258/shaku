@@ -1,11 +1,11 @@
 error: Struct properties must be named
-  --> $DIR/tuple_struct.rs:10:22
+  --> tests/ui/tuple_struct.rs:10:22
    |
 10 | struct ComponentImpl(usize);
    |                      ^^^^^
 
 error: Struct properties must be named
-  --> $DIR/tuple_struct.rs:15:21
+  --> tests/ui/tuple_struct.rs:15:21
    |
 15 | struct ProviderImpl(usize);
    |                     ^^^^^

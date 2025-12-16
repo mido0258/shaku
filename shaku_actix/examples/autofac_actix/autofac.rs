@@ -4,12 +4,6 @@
 use shaku::{module, Component, Interface};
 use std::sync::Arc;
 
-module! {
-    pub AutoFacModule {
-        components = [ConsoleOutput, TodayWriter],
-        providers = []
-    }
-}
 
 pub trait IOutput: Interface {
     fn write(&self, content: String);
@@ -46,5 +40,12 @@ impl IDateWriter for TodayWriter {
 
     fn get_date(&self) -> String {
         format!("Today is {}, {}", self.today, self.year)
+    }
+}
+module! {
+    pub AutoFacModule {
+        components = [ConsoleOutput, TodayWriter],
+        providers = [],
+
     }
 }

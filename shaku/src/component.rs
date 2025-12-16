@@ -31,6 +31,20 @@ pub trait Component<M: Module>: Interface {
     /// [`M::build_component`]: trait.HasComponent.html#tymethod.build_component
     fn build(context: &mut ModuleBuildContext<M>, params: Self::Parameters)
         -> Box<Self::Interface>;
+
+    /// Register the component under all its interfaces.
+    /// This is called by `ModuleBuildContext` after the component is built.
+    #[allow(unused_variables)]
+    fn register_interfaces(context: &mut ModuleBuildContext<M>, component: Arc<Self::Interface>) {
+        // Default implementation does nothing (for backward compatibility)
+    }
+}
+
+/// A trait to retrieve the default interface of a component.
+/// This is used by the `module!` macro to determine the default interface
+/// when generating `HasComponent` implementations.
+pub trait DefaultInterface {
+    type Interface: ?Sized;
 }
 
 #[cfg(not(feature = "thread_safe"))]
@@ -96,7 +110,7 @@ pub trait HasComponent<I: Interface + ?Sized>: ModuleInterface {
     /// #     TestModule {
     /// #         components = [FooImpl],
     /// #         providers = [],
-    /// #         interfaces = []
+    /// # 
     /// #     }
     /// # }
     /// #
@@ -125,7 +139,7 @@ pub trait HasComponent<I: Interface + ?Sized>: ModuleInterface {
     /// # module! {
     /// #     TestModule {
     /// #         components = [FooImpl],
-    /// #         providers = [], interfaces = []
+    /// #         providers = [], 
     /// #     }
     /// # }
     /// #
@@ -165,7 +179,7 @@ pub trait HasVariant<C, I: Interface + ?Sized> {
     /// # module! {
     /// #     TestModule {
     /// #         components = [FooImpl],
-    /// #         providers = [], interfaces = []
+    /// #         providers = [], 
     /// #     }
     /// # }
     /// #
@@ -195,7 +209,7 @@ pub trait HasVariant<C, I: Interface + ?Sized> {
     /// #     TestModule {
     /// #         components = [FooImpl],
     /// #         providers = [],
-    /// #         interfaces = []
+    /// # 
     /// #     }
     /// # }
     /// #

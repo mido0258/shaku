@@ -5,7 +5,7 @@ error: Submodule components cannot have attributes
    |                                   ^^^^^^^^^^^^^^
 
 error: Providers cannot have attributes
-  --> tests/ui/submodule_service_attributes.rs:48:26
+  --> tests/ui/submodule_service_attributes.rs:47:26
    |
-48 |             providers = [#[lazy] ProviderTrait],
+47 |             providers = [#[lazy] ProviderTrait],
    |                          ^^^^^^^

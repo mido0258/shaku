@@ -38,7 +38,7 @@ module! {
     MyModule<C: Connection<Database = MyDatabase> + Default> {
         components = [DbPoolImpl<C>],
         providers = [],
-        interfaces = [],
+
     }
 }
 
@@ -46,12 +46,12 @@ module! {
     RootModule<C: Connection<Database = MyDatabase> + Default> {
         components = [],
         providers = [],
-        interfaces = [],
+
 
         use MyModule<C> {
             components = [DbPool<C>],
             providers = [],
-            interfaces = [],
+    
         }
     }
 }

@@ -28,7 +28,6 @@ module! {
     TestModule {
         components = [ValueServiceImpl],
         providers = [],
-        interfaces = []
     }
 }
 

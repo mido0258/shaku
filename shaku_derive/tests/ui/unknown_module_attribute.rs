@@ -11,7 +11,7 @@ module! {
     TestModule {
         components = [#[unknown] ComponentImpl],
         providers = [],
-        interfaces = [],
+
     }
 }
 

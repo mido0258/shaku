@@ -48,7 +48,7 @@ impl Presenter for P1 {
     fn register_paths(&self) {}
 }
 #[derive(Component)]
-#[shaku(interface = Presenter)]
+#[shaku(interface = Presenter, no_resolve = true)]
 struct P2 {}
 impl Presenter for P2 {
     fn register_paths(&self) {}
@@ -62,11 +62,20 @@ impl Test for T1 {
     }
 }
 #[derive(Component)]
-#[shaku(interface = Test)]
+#[shaku(interface = Test, no_resolve = true)]
 struct T2 {}
 impl Test for T2 {
     fn test(&self) -> i32 {
         return 2;
+    }
+}
+
+#[derive(Component)]
+#[shaku(interface = Test, no_resolve = true)]
+struct T3 {}
+impl Test for T3 {
+    fn test(&self) -> i32 {
+        return 3;
     }
 }
 #[derive(Component)]
@@ -85,7 +94,7 @@ trait Tst: Interface {
 impl Tst for TstImpl {
     fn tst(&self) -> i32 {
         let mut sum = 0;
-        assert_eq!(self.presenters.len(), 2);
+        assert_eq!(self.presenters.len(), 3);
 
         for p in self.presenters.iter() {
             sum += p.test()
@@ -96,17 +105,15 @@ impl Tst for TstImpl {
 
 module! {
     TestModule {
-        components = [Builder, Router],
+        components = [Builder, Router, P1, P2],
         providers = [],
-        interfaces = [#[implementations P1, P2] dyn Presenter]
     }
 }
 
 module! {
     TestModule2 {
-        components = [TstImpl],
-        providers = [],
-        interfaces = [#[implementations P1, P2] dyn Presenter, #[implementations T1, T2] dyn Test],
+        components = [TstImpl, P1, P2, T1, T2, T3],
+        providers = []
     }
 }
 
@@ -118,5 +125,5 @@ fn interfaces() {
 
     let module = TestModule2::builder().build();
     let app: &dyn Tst = module.resolve_ref();
-    assert_eq!(app.tst(), 3);
+    assert_eq!(app.tst(), 6);
 }

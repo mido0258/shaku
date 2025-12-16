@@ -8,12 +8,12 @@ use syn::punctuated::Punctuated;
 use syn::{token, Attribute, Generics, Ident, Type, Visibility};
 
 pub type ComponentItem = ModuleItem<ComponentAttribute>;
-pub type InterfaceItem = ModuleItem<InterfaceAttribute>;
+
 
 mod kw {
     syn::custom_keyword!(components);
     syn::custom_keyword!(providers);
-    syn::custom_keyword!(interfaces);
+
 }
 
 /// The main module data structure, parsed from the macro input
@@ -44,10 +44,8 @@ pub struct Submodule {
 #[derive(Debug)]
 pub struct ModuleServices {
     pub components: ModuleItems<kw::components, ComponentAttribute>,
-    pub comma_token: syn::Token![,],
+    pub _comma_token: syn::Token![,],
     pub providers: ModuleItems<kw::providers, ProviderAttribute>,
-    pub comma_token2: syn::Token![,],
-    pub interfaces: ModuleItems<kw::interfaces, InterfaceAttribute>,
     pub trailing_comma: Option<syn::Token![,]>,
 }
 
@@ -57,9 +55,9 @@ pub struct ModuleItems<T: Parse, A: Eq + Hash>
 where
     Attribute: Parser<A>,
 {
-    pub keyword_token: T,
-    pub eq_token: token::Eq,
-    pub bracket_token: token::Bracket,
+    pub _keyword_token: T,
+    pub _eq_token: token::Eq,
+    pub _bracket_token: token::Bracket,
     // Can't use syn::Token![,] here because of
     // https://github.com/rust-lang/rust/issues/50676
     pub items: Punctuated<ModuleItem<A>, token::Comma>,
@@ -80,12 +78,15 @@ impl ModuleItem<ComponentAttribute> {
     pub fn is_lazy(&self) -> bool {
         self.attributes.contains(&ComponentAttribute::Lazy)
     }
+
+
 }
 
 /// Valid component attributes
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum ComponentAttribute {
     Lazy,
+    Interface(Type),
 }
 
 /// Valid provider attributes
@@ -94,7 +95,4 @@ pub enum ProviderAttribute {
     // None currently
 }
 
-#[derive(Debug, Eq, PartialEq, Hash)]
-pub enum InterfaceAttribute {
-    Implementations(Vec<Type>),
-}
+

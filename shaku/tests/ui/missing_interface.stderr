@@ -1,0 +1,5 @@
+error: Unable to find interface. Please add a '#[shaku(interface = <your trait>)]'
+ --> tests/ui/missing_interface.rs:6:8
+  |
+6 | struct MyComponent;
+  |        ^^^^^^^^^^^
